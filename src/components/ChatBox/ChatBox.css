@@ -1,7 +1,10 @@
 .chat-box{
     /* max-height: 43rem;
      */
-    max-height:38rem ;
+    min-height: 59vh;
+    /* max-height: 100% ; */
+    height: 70%;
+
     position: relative;
     background-color: #f1f5ff;
     /* display: flex; */
