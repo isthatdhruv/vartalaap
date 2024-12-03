@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect} from "react";
 import assets from "../../assets/assets";
 import './ChatBox.css';
 import { AppContext } from "../../context/AppContext";
@@ -11,7 +11,7 @@ import { getDownloadURL, ref } from "firebase/storage";
 const ChatBox = () => {
     const {userData , messagesId , messages , chatUser , setMessages } = useContext(AppContext);
 
-    const [input,setInput] = useState('');
+    const [input,setInput] = React.useState('');
 
     const sendMessage = async()=>{
         try {
@@ -148,21 +148,21 @@ const ChatBox = () => {
         <div className="chat-box">
             <div className="chat-user">
                 <img src={chatUser.userData.avatar} alt="" />
-                <p>{chatUser.userData.name}<img src={assets.green_dot} className="dot" alt="" /></p>
+                <p>{chatUser.userData.name} {Date.now()-chatUser.userData.lastSeen <=70000 ? <img src={assets.green_dot} className="dot" alt="" /> : null}</p>
                 <img src={assets.help_icon} alt="" className="help" />
             </div>
             <div className="chat-msg">
                 {messages.map((msg,index)=>(
-                    <div key={index} className={msg.sId === userData.id ? "s-msg":"r-msg"}>
-                        {msg["image"]
-                        ?<img src={msg.image} alt="" className="msg-image" onClick={()=>{handleImageDownload(msg.image)}} />
-                        :<p className="msg">{msg.text}</p>}
-                        <div>
-                            <img src={msg.sId === userData.id ? userData.avatar : chatUser.userData.avatar} alt="" className="msg-avatar" />
-                            <p>{convertTime(msg.createdAt)}</p>
-                        </div>
-                        
+                    <div key={index} className={msg.sId === userData.id ? "s-msg":"r-msg"}> 
+                    <div> {/* Moved this div to the beginning */}
+                        {/* <img src={msg.sId === userData.id ? userData.avatar : chatUser.userData.avatar} alt="" className="msg-avatar" /> */}
+                        <p>{convertTime(msg.createdAt)}</p>
                     </div>
+                    {msg["image"]
+                        ? <img src={msg.image} alt="" className="msg-image" onClick={()=>{window.open(msg.image)}} />
+                        : <p className="msg">{msg.text}</p>
+                    }
+                </div>
 
                 ))}
             </div>
