@@ -131,6 +131,6 @@
     cursor: pointer;
     font-size: 14px;
 }
-.menu:hover .sub-menu{
+.menu .sub-menu{
     display: block;
 }

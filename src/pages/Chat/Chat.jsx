@@ -17,7 +17,7 @@ const Chat = () => {
     return (
         <>
         {loading
-        ?<ClipLoader color="#FFFFFF" loading={loading} size={60} margin={2}/>
+        ?<div className="loading"><ClipLoader color="blue" loading={loading} size={100} margin={5}/></div>
         :<div className="chat-container">
             <LeftSidebar/>
             <ChatBox/>

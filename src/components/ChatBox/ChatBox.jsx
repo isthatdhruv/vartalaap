@@ -18,7 +18,7 @@ const ChatBox = () => {
                     messages: arrayUnion({
                         sId:userData.id,
                         text:input,
-                        createdAt:new Date()
+                        createdAt:Timestamp.now(),
                     })
                 
                 })
@@ -32,14 +32,14 @@ const ChatBox = () => {
                     if(userChatsSnapshot.exists()){
                         const userChatData = userChatsSnapshot.data();
                         const chatIndex = userChatData.chatData.findIndex((chat)=>chat.messageId===messagesId);
-                        userChatData.chatsData[chatIndex].lastMessage = input.slice(0,30);
-                        userChatData.chatsData[chatIndex].updatedAt = Date.now();
+                        userChatData.chatData[chatIndex].lastMessage = input.slice(0,30);
+                        userChatData.chatData[chatIndex].updatedAt = Date.now();
 
-                        if(userChatData.chatsdata[chatIndex].rId === userData.id){
-                            userChatData.chatsData[chatIndex].messageSeen= false;
+                        if(userChatData.chatdata[chatIndex].rId === userData.id){
+                            userChatData.chatData[chatIndex].messageSeen= false;
                         }
                         await updateDoc(userChatsRef,{
-                            chatsData:userChatData.chatsData
+                            chatData:userChatData.chatData
                         })
                     }
                 
@@ -53,14 +53,16 @@ const ChatBox = () => {
         }
         setInput('');
     }
-    const convertTime = (time) =>{
-        let date =time.toDate();
+    const convertTime = (time) => {
+        let date = time.toDate(); // Convert Firestore timestamp to Date object
         const hours = date.getHours();
         const minutes = date.getMinutes();
-        if(hours>12){
-            return hours-12 + ':' + minutes +'PM';
-        }
-    }
+        const ampm = hours >= 12 ? "PM" : "AM";
+        const formattedHours = hours % 12 || 12; 
+    
+        const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+        return `${formattedHours}:${formattedMinutes} ${ampm}`;
+    };
     useEffect(()=>{
         if(messagesId){
             const msgRef = doc(db,"messages",messagesId);
@@ -72,7 +74,7 @@ const ChatBox = () => {
                 unSub();
             }
         }
-    },[messagesId])
+    },[messagesId, setMessages])
 
 
 
@@ -86,7 +88,7 @@ const ChatBox = () => {
             </div>
             <div className="chat-msg">
                 {messages.map((msg,index)=>(
-                    <div key={""} className={msg.sId === userData.id ? "s-msg":"r-msg"}>
+                    <div key={index} className={msg.sId === userData.id ? "s-msg":"r-msg"}>
                         <p className="msg">{msg.text}</p>
                         <div>
                             <img src={msg.sId === userData.id ? userData.avatar : chatUser.userData.avatar} alt="" className="msg-avatar" />

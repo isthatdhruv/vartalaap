@@ -23,7 +23,10 @@ const LeftSidebar = () => {
   const { userData, chatData, setChatData, setChatUser, setMessagesId } = useContext(AppContext);
   const [user, setUser] = useState(null);
   const [searchResults, setSearchResults] = useState(false);
-
+  const [showMenu, setShowMenu] = useState(false);
+  const toggleMenu = () => {
+    setShowMenu(!showMenu); // Toggle the state on click
+  };
   useEffect(() => {
     // Create a copy of chatData to avoid modifying the original state directly
     const uniqueUsers = [];
@@ -40,7 +43,7 @@ const LeftSidebar = () => {
     if (uniqueUsers.length !== chatData.length) {
       setChatData(uniqueUsers);
     }
-  }, [chatData]);
+  }, [chatData,setChatData]);
 
   const inputHandler = async (e) => {
     try {
@@ -144,12 +147,14 @@ const LeftSidebar = () => {
         <div className="ls-nav">
           <img src={assets.logo} className="logo" alt="" />
           <div className="menu">
-            <img src={assets.menu_icon} alt="" />
-            <div className="sub-menu">
-              <p onClick={() => navigate("/profile")}>Edit Profile</p>
-              <hr />
-              <p>Logout</p> {/* Add logout functionality here */}
-            </div>
+            <img onClick={toggleMenu} src={assets.menu_icon} alt="" />
+            {showMenu && ( // Correct conditional rendering 
+              <div className="sub-menu">
+                <p onClick={() => navigate("/profile")}>Edit Profile</p>
+                <hr />
+                <p>Friend Requests</p> {/* Add logout functionality here */}
+              </div>
+            )} 
           </div>
         </div>
         <div className="ls-search">
@@ -184,15 +189,6 @@ const LeftSidebar = () => {
               </div>
             ))
           )}
-        </div>
-        <div className="new-requests">
-          <div className="friends add-user">
-            <img src={assets.avatar_icon} alt="" />
-            <p>User</p>
-            <button className="add" onClick={""}>
-              Add Friend
-            </button>
-          </div>
         </div>
       </div>
     </div>

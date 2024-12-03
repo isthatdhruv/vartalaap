@@ -54,9 +54,7 @@ const ProfileUpdate = () => {
   };
 
   useEffect(() => {
-    onAuthStateChanged(
-      auth,
-      async (user) => {
+    const unsubscribe=onAuthStateChanged(auth,async (user) => {
         if (user) {
           setUid(user.uid);
           const docRef = doc(db, "users", user.uid);
@@ -73,10 +71,10 @@ const ProfileUpdate = () => {
         } else {
           navigate("/");
         }
-      },
-      []
-    );
-  });
+    });
+    
+  return () => unsubscribe(); // Unsubscribe from onAuthStateChanged on unmount
+}, []);
   return (
     <div className="profile">
       <div className="profile-container">

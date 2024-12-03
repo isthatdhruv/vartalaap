@@ -14,3 +14,14 @@
 
 
 }
+.loading{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    place-self: center;
+    max-height: 60rem;
+    margin-top: 25rem;
+    
+    
+    
+}
