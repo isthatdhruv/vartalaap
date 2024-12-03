@@ -3,6 +3,7 @@
     background: linear-gradient(#596aff , #383699);
     display: grid;
     place-items: center;
+
 }
 .chat-container{
     width: 95%;
@@ -11,6 +12,7 @@
     background-color: white;
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
+    overflow-y: hidden;
 
 
 }

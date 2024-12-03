@@ -1,8 +1,12 @@
 .chat-box{
-    max-height: 60rem;
+    /* max-height: 43rem;
+     */
+    max-height:38rem ;
     position: relative;
     background-color: #f1f5ff;
-    zoom: 1.5;
+    /* display: flex; */
+    scrollbar-width: thin;
+    zoom: 1.7;
 }
 .chat-user{
     padding: 10px 15px;
