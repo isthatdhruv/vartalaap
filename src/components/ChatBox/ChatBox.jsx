@@ -5,6 +5,7 @@ import { AppContext } from "../../context/AppContext";
 import { arrayUnion, doc, getDoc, onSnapshot, Timestamp, updateDoc } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import { toast } from "react-toastify";
+import upload from "../../lib/upload";
 
 const ChatBox = () => {
     const {userData , messagesId , messages , chatUser , setMessages } = useContext(AppContext);
@@ -53,6 +54,53 @@ const ChatBox = () => {
         }
         setInput('');
     }
+    const sendImage = async(e)=>{
+        try {
+            const fileUrl=await upload(e.target.files[0]);
+
+            if(fileUrl&&messagesId){
+                await updateDoc(doc(db,"messages",messagesId),{
+                    messages: arrayUnion({
+                        sId:userData.id,
+                        image:fileUrl,
+                        createdAt:Timestamp.now(),
+                    })
+                
+                })
+                const userIDs = [chatUser.rId ,userData.id];
+
+                userIDs.forEach(async(id)=>{
+                    const userChatsRef = doc(db,"chats",id);
+                    const userChatsSnapshot = await getDoc(userChatsRef);
+                
+                    if(userChatsSnapshot.exists()){
+                        const userChatData = userChatsSnapshot.data();
+                        const chatIndex = userChatData.chatData.findIndex((chat)=>chat.messageId===messagesId);
+                        userChatData.chatData[chatIndex].lastMessage = "image";
+                        userChatData.chatData[chatIndex].updatedAt = Date.now();
+
+                        if(userChatData.chatdata[chatIndex].rId === userData.id){
+                            userChatData.chatData[chatIndex].messageSeen= false;
+                        }
+                        await updateDoc(userChatsRef,{
+                            chatData:userChatData.chatData
+                        })
+                    }
+                
+                })
+
+            }
+        } catch (error) {
+            toast.error(error.message);
+            
+        }
+
+    }
+
+
+
+
+
     const convertTime = (time) => {
         let date = time.toDate(); // Convert Firestore timestamp to Date object
         const hours = date.getHours();
@@ -89,7 +137,9 @@ const ChatBox = () => {
             <div className="chat-msg">
                 {messages.map((msg,index)=>(
                     <div key={index} className={msg.sId === userData.id ? "s-msg":"r-msg"}>
-                        <p className="msg">{msg.text}</p>
+                        {msg["image"]
+                        ?<img src={msg.image} alt="" className="msg-image"/>
+                        :<p className="msg">{msg.text}</p>}
                         <div>
                             <img src={msg.sId === userData.id ? userData.avatar : chatUser.userData.avatar} alt="" className="msg-avatar" />
                             <p>{convertTime(msg.createdAt)}</p>
@@ -100,7 +150,7 @@ const ChatBox = () => {
             </div>
             <div className="chat-input">
                 <input onChange={(e)=>setInput(e.target.value)} value={input} type="text" placeholder="Type a message..." />
-                <input type="file" id="image" accept="image/png , image/jpeg" hidden/>
+                <input onChange={sendImage} type="file" id="image" accept="image/png , image/jpeg" hidden/>
                 <label htmlFor="image">
                     <img src={assets.gallery_icon} alt="" />
                 </label>
