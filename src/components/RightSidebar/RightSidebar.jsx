@@ -1,15 +1,21 @@
-import React from "react";
+import React, { useContext } from "react";
 import './RightSidebar.css';
 import assets from "../../assets/assets";
 import { logout } from "../../config/firebase";
+import { AppContext } from "../../context/AppContext";
 
 const RightSidebar = () => {
-    return (
+    const {chatUser,messages}=useContext(AppContext);
+
+
+
+
+    return chatUser ? (
         <div className="rs">
             <div className="rs-profile">
-                <img src={assets.profile_img} alt="" />
-                <h3>Dhruv Kumar<img src={assets.green_dot} className="dot"alt="" /></h3>
-                <p>Your Bio</p>
+                <img src={chatUser.userData.avatar} alt="" />
+                <h3>{chatUser.userData.name}<img src={assets.green_dot} className="dot"alt="" /></h3>
+                <p>{chatUser.userData.bio}</p>
             </div>
             <hr />
             <div className="rs-media">
@@ -24,6 +30,10 @@ const RightSidebar = () => {
                 </div>
             </div>
             <button onClick={()=>logout()} className="">Logout</button>
+        </div>
+    ):(
+        <div className="rs">
+            <button onClick={()=>logout()} className="">Logout</button> 
         </div>
     )
 }
