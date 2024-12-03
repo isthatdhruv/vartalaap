@@ -3,9 +3,10 @@ import assets from "../../assets/assets";
 import './ChatBox.css';
 import { AppContext } from "../../context/AppContext";
 import { arrayUnion, doc, getDoc, onSnapshot, Timestamp, updateDoc } from "firebase/firestore";
-import { db } from "../../config/firebase";
+import { db , storage} from "../../config/firebase";
 import { toast } from "react-toastify";
 import upload from "../../lib/upload";
+import { getDownloadURL, ref } from "firebase/storage";
 
 const ChatBox = () => {
     const {userData , messagesId , messages , chatUser , setMessages } = useContext(AppContext);
@@ -96,7 +97,23 @@ const ChatBox = () => {
         }
 
     }
-
+    const handleImageDownload = async (imageUrl) => {
+        try {
+          const imageRef = ref(storage, imageUrl);
+          const downloadUrl = await getDownloadURL(imageRef);
+    
+          const link = document.createElement("a");
+          link.href = downloadUrl;
+          link.setAttribute("download", "image.jpg"); // Or get the image name from imageUrl
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } catch (error) {
+          console.error("Error downloading image:", error);
+    
+          toast.error("Failed to download image.");
+        }
+      };
 
 
 
@@ -138,12 +155,13 @@ const ChatBox = () => {
                 {messages.map((msg,index)=>(
                     <div key={index} className={msg.sId === userData.id ? "s-msg":"r-msg"}>
                         {msg["image"]
-                        ?<img src={msg.image} alt="" className="msg-image"/>
+                        ?<img src={msg.image} alt="" className="msg-image" onClick={()=>{handleImageDownload(msg.image)}} />
                         :<p className="msg">{msg.text}</p>}
                         <div>
                             <img src={msg.sId === userData.id ? userData.avatar : chatUser.userData.avatar} alt="" className="msg-avatar" />
                             <p>{convertTime(msg.createdAt)}</p>
                         </div>
+                        
                     </div>
 
                 ))}

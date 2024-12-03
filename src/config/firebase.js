@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 import { toast } from "react-toastify";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -22,6 +23,7 @@ const app = initializeApp(firebaseConfig);
 // Initialize Firebase
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
 const signup = async(username,email,password)=>{
     try {
@@ -62,4 +64,4 @@ const logout = async()=>{
         toast.error(error.code.split('/')[1].split('-').join(' '));
     }
 }
-export {signup,login,logout,auth,db};
+export {signup,login,logout,auth,db,storage};
