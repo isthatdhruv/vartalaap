@@ -1,7 +1,9 @@
+
 .ls{
     background: #001030;
     color: white;
-    height: 75vh;
+    max-height: 60rem;
+    zoom: 1.5;
 }
 
 .ls-top{
@@ -52,7 +54,30 @@
     flex-direction: column;
     height: 400px;
     overflow-y:scroll;
+    font-size: large;
+    cursor:null;
+    flex: 2fr 1fr;
+    
 }
+.ls-list button{
+    background: #077eff;
+    color: white;   
+    padding: 5px 10px;
+    border-radius: 15px;
+    margin-left: 35px;
+    margin-right: 0px;
+    flex: 1fr;
+    cursor: pointer;
+}
+/* .ls-list .add{
+    background: #077eff;
+    color: white;   
+    padding: 5px 10px;
+    border-radius: 15px;
+    margin-left: 100px;
+    flex: auto;
+    cursor: pointer;
+} */
 .friends img{
     width: 35px;
     aspect-ratio: 1/1;
@@ -77,9 +102,7 @@
     font-size: 11px;
 
 }
-.friends:hover{
-    background: #077eff;
-}
+
 .friends:hover span{
     color: white;
 }

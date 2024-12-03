@@ -1,19 +1,46 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import "./LeftSidebar.css";
 import assets from "../../assets/assets";
 import { useNavigate } from "react-router-dom";
-import { arrayUnion, collection, doc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from "firebase/firestore";
+import {
+  arrayUnion,
+  collection,
+  doc,
+  getDocs,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { db } from "../../config/firebase";
+1;
 import { AppContext } from "../../context/AppContext";
 import { toast } from "react-toastify";
-// import { CSSProperties } from "react";
-
 
 const LeftSidebar = () => {
   const navigate = useNavigate();
-  const { userData ,chatData , chatUser ,setChatUser,setMessagesId,messagesId} = useContext(AppContext);
+  const { userData, chatData, setChatData, setChatUser, setMessagesId } = useContext(AppContext);
   const [user, setUser] = useState(null);
   const [searchResults, setSearchResults] = useState(false);
+
+  useEffect(() => {
+    // Create a copy of chatData to avoid modifying the original state directly
+    const uniqueUsers = [];
+    const seenIds = new Set();
+
+    for (const user of chatData) {
+      if (!seenIds.has(user.rId)) {
+        uniqueUsers.push(user);
+        seenIds.add(user.rId);
+      }
+    }
+
+    // Check if there are any duplicates before updating the state
+    if (uniqueUsers.length !== chatData.length) {
+      setChatData(uniqueUsers);
+    }
+  }, [chatData]);
 
   const inputHandler = async (e) => {
     try {
@@ -25,69 +52,92 @@ const LeftSidebar = () => {
         const querySnap = await getDocs(q);
 
         if (!querySnap.empty && querySnap.docs[0].data().id !== userData.id) {
-          let userExist=false;
-          chatData.map((user)=>{
-            if(user.rId===querySnap.docs[0].data().id){
-              userExist=true;
-            }
-          })
-          if(!userExist){
+          const userExists = chatData.some(
+            (user) => user.rId === querySnap.docs[0].data().id
+          );
+
+          if (userExists) {
             setUser(querySnap.docs[0].data());
-            
+          } else {
+            // toast.info("This user is already in your friends list!");
+            // setUser(null);
           }
-          setUser(querySnap.docs[0].data());
-          
         } else if (querySnap.empty) {
           console.log("No user found");
-          
+          setUser(null);
         }
-      }else{
+      } else {
         setSearchResults(false);
+        setUser(null);
       }
     } catch (error) {
       console.error(error);
     }
   };
-  const addChat = async () => {
-    const messagesRef = collection(db,"messages");
-    const chatRef = collection(db, "chats");
-    try {
-        const newMessageRef = doc(messagesRef);
-        await setDoc(newMessageRef,{
-            createAt:serverTimestamp(),
-            messages:[]
-        });
-        await updateDoc(doc(chatRef,user.id),{ 
-            chatData:arrayUnion({
-                messageId:newMessageRef.id,
-                lastMessage:"",
-                rId:userData.id,
-                updatedAt:Date.now(),
-                messageSeen:true
-            })
-        });
-        await updateDoc(doc(chatRef,userData.id),{ 
-            chatData:arrayUnion({
-                messageId:newMessageRef.id,
-                lastMessage:"",
-                rId:user.id,
-                updatedAt:Date.now(),
-                messageSeen:true
-            })
-        });
-    } catch (error) {
-        toast.error(error.message);
-        console.error(error);
-    }
 
-    
-  }
+  const addChat = async () => {
+    const messagesRef = collection(db, "messages");
+    const chatRef = collection(db, "chats");
+  
+    try {
+      // 1. Check if the user already exists in the friends list
+      const userExists = chatData.some((chat) => chat.rId === user.id);
+  
+      if (userExists) {
+        toast.info("This user is already in your friends list!");
+        return;
+      }
+  
+      // 2. If the user doesn't exist, proceed with creating the chat
+      const chatQuery = query(
+        chatRef,
+        where("chatData", "array-contains-any", [
+          { rId: userData.id, messageId: user.id },
+          { rId: user.id, messageId: userData.id },
+        ])
+      );
+  
+      const chatSnapshot = await getDocs(chatQuery);
+      if (!chatSnapshot.empty) {
+        console.log("Chat already exists!");
+        toast.error("Chat already exists!");
+        return;
+      } else {
+        const newMessageRef = doc(messagesRef);
+        await setDoc(newMessageRef, {
+          createAt: serverTimestamp(),
+          messages: [],
+        });
+        await updateDoc(doc(chatRef, user.id), {
+          chatData: arrayUnion({
+            messageId: newMessageRef.id,
+            lastMessage: "",
+            rId: userData.id,
+            updatedAt: Date.now(),
+            messageSeen: true,
+          }),
+        });
+        await updateDoc(doc(chatRef, userData.id), {
+          chatData: arrayUnion({
+            messageId: newMessageRef.id,
+            lastMessage: "",
+            rId: user.id,
+            updatedAt: Date.now(),
+            messageSeen: true,
+          }),
+        });
+      }
+    } catch (error) {
+      toast.error(error.message);
+      console.error(error);
+    }
+  };
+
   const setChat = async (item) => {
     setMessagesId(item.messageId);
     setChatUser(item);
-    
+  };
 
-  }
   return (
     <div className="ls">
       <div className="ls-top">
@@ -96,15 +146,9 @@ const LeftSidebar = () => {
           <div className="menu">
             <img src={assets.menu_icon} alt="" />
             <div className="sub-menu">
-              <p
-                onClick={() => {
-                  navigate("/profile");
-                }}
-              >
-                Edit Profile
-              </p>
+              <p onClick={() => navigate("/profile")}>Edit Profile</p>
               <hr />
-              <p>Logout</p>
+              <p>Logout</p> {/* Add logout functionality here */}
             </div>
           </div>
         </div>
@@ -118,24 +162,41 @@ const LeftSidebar = () => {
         </div>
         <div className="ls-list">
           {searchResults && user ? (
-            <div onClick={addChat} className="friends add-user">
+            <div className="friends add-user">
               <img src={user.avatar} alt="" />
               <p>{user.username}</p>
+              <button className="add" onClick={addChat}>
+                Add Friend
+              </button>
             </div>
           ) : (
-              chatData.map((item, index) => (
-                <div key={index} onClick={()=>setChat(item)} className="friends">
-                  <img src={item.userData.avatar} alt="" />
-                  <div>
-                    <p>{item.userData.name}</p>
-                    <span>{item.lastMessage}</span>
-                  </div>
+            chatData.map((item, index) => (
+              <div
+                key={index}
+                onClick={() => setChat(item)}
+                className="friends"
+              >
+                <img src={item.userData.avatar} alt="" />
+                <div>
+                  <p>{item.userData.name}</p>
+                  <span>{item.lastMessage}</span>
                 </div>
-              ))
+              </div>
+            ))
           )}
+        </div>
+        <div className="new-requests">
+          <div className="friends add-user">
+            <img src={assets.avatar_icon} alt="" />
+            <p>User</p>
+            <button className="add" onClick={""}>
+              Add Friend
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 };
+
 export default LeftSidebar;

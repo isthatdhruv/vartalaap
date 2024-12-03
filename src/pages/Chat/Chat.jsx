@@ -15,17 +15,17 @@ const Chat = () => {
         }
     },[chatData,userData])
     return (
-        <div className="chat">
-            {loading
-            ?<ClipLoader color="#FFFFFF" loading={loading} size={60} margin={2}/>
-            :<div className="chat-container">
-                <LeftSidebar/>
-                <ChatBox/>
-                <RightSidebar/>
+        <>
+        {loading
+        ?<ClipLoader color="#FFFFFF" loading={loading} size={60} margin={2}/>
+        :<div className="chat-container">
+            <LeftSidebar/>
+            <ChatBox/>
+            <RightSidebar/>
 
             </div>
-            }
-        </div>
+        }
+        </>
     );
 }
 export default Chat;
