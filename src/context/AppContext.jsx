@@ -12,6 +12,8 @@ const AppContextProvider = (props) =>{
     const [chatData , setChatData] = useState(null);
     const [messagesId,setMessagesId] = useState(null);
     const [messages,setMessages] = useState([]);
+    const [chatVisual,setChatVisual] = useState(false);
+    
     const [chatUser,setChatUser] = useState(null);
     const loadUserData = async(uid) =>{
         try {
@@ -71,7 +73,8 @@ const AppContextProvider = (props) =>{
         loadUserData,
         messagesId,setMessagesId,
         messages,setMessages,
-        chatUser,setChatUser
+        chatUser,setChatUser,
+        chatVisual,setChatVisual
 
 
     }

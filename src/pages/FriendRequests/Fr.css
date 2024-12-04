@@ -1,0 +1,21 @@
+.fr{
+    min-height: 100vh;
+    min-width: 100vw;
+    background: url(/background.png) no-repeat;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.fr-box{
+    background-color: aliceblue;
+    min-width: 50vw;
+    min-height: 70vh;
+    border-radius: 15px;
+}
+.fr-box h1{
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color:darkblue ;
+}

@@ -9,7 +9,7 @@ import upload from "../../lib/upload";
 import { getDownloadURL, ref } from "firebase/storage";
 
 const ChatBox = () => {
-    const {userData , messagesId , messages , chatUser , setMessages } = useContext(AppContext);
+    const {userData , messagesId , messages , chatUser , setMessages ,chatVisual , setChatVisual} = useContext(AppContext);
 
     const [input,setInput] = React.useState('');
 
@@ -97,23 +97,23 @@ const ChatBox = () => {
         }
 
     }
-    const handleImageDownload = async (imageUrl) => {
-        try {
-          const imageRef = ref(storage, imageUrl);
-          const downloadUrl = await getDownloadURL(imageRef);
+    // const handleImageDownload = async (imageUrl) => {
+    //     try {
+    //       const imageRef = ref(storage, imageUrl);
+    //       const downloadUrl = await getDownloadURL(imageRef);
     
-          const link = document.createElement("a");
-          link.href = downloadUrl;
-          link.setAttribute("download", "image.jpg"); // Or get the image name from imageUrl
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        } catch (error) {
-          console.error("Error downloading image:", error);
+    //       const link = document.createElement("a");
+    //       link.href = downloadUrl;
+    //       link.setAttribute("download", "image.jpg"); // Or get the image name from imageUrl
+    //       document.body.appendChild(link);
+    //       link.click();
+    //       document.body.removeChild(link);
+    //     } catch (error) {
+    //       console.error("Error downloading image:", error);
     
-          toast.error("Failed to download image.");
-        }
-      };
+    //       toast.error("Failed to download image.");
+    //     }
+    //   };
 
 
 
@@ -145,7 +145,7 @@ const ChatBox = () => {
 
 
     return chatUser?(
-        <div className="chat-box">
+        <div className={`chat-box ${chatVisual?"":"hidden"}`}>
             <div className="chat-user">
                 <img src={chatUser.userData.avatar} alt="" />
                 <p>{chatUser.userData.name} {Date.now()-chatUser.userData.lastSeen <=70000 ? <img src={assets.green_dot} className="dot" alt="" /> : null}</p>
@@ -176,7 +176,7 @@ const ChatBox = () => {
             </div>
         </div>
     ):(
-        <div className="chat-welcome">
+        <div className={`chat-welcome ${chatVisual?"":"hidden"}`}>
             <img src={assets.logo_icon} alt="" />
             <p>Start a Chat</p>
         </div>

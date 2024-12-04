@@ -134,3 +134,17 @@
 .menu .sub-menu{
     display: block;
 }
+@media (max-width: 900px) {
+    .ls {
+        zoom: 1; /* Reset zoom on smaller screens */
+        /* Or adjust transform: scale(1); if you're using transform */
+    }
+
+    .ls-list {
+        height: auto; /* Let the content determine the height */
+    }
+
+    .friends {
+        padding: 8px 15px; /* Adjust padding */
+    }
+}

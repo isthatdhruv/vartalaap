@@ -1,20 +1,18 @@
-.chat{
+.chat {
     min-height: 100vh;
-    background: linear-gradient(#596aff , #383699);
+    background: linear-gradient(#596aff, #383699);
     display: grid;
     place-items: center;
-
 }
-.chat-container{
+
+.chat-container {
     width: 95%;
     height: 100vh;
     min-width: 100%;
     background-color: white;
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 2fr 1fr; /* Adjust for smaller screens */
     overflow-y: hidden;
-
-
 }
 .loading{
     display: flex;
@@ -26,4 +24,19 @@
     
     
     
+}
+@media (max-width: 900px) {
+    .chat-container {
+        display: flex; /* Allow vertical scrolling */
+    }
+    .loading{
+        font-size: 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .chat-container {
+        grid-template-columns: 1fr; /* Only show chatbox */
+        height: auto; /* Allow chatbox to determine height */
+    }
 }

@@ -2,7 +2,7 @@ import React from "react";
 import './Login.css';
 import assets from '../../assets/assets';
 import { useState } from "react";
-import  {signup , login}  from "../../config/firebase";
+import  {signup , login ,resetPass}  from "../../config/firebase";
 
 const Login = () => {
     const[currentState, setCurrentState] = useState('Sign Up');
@@ -46,6 +46,7 @@ const Login = () => {
 
 
                     }
+                    {currentState === "Login" ? <p className="login-toggle">Forgot Password ? <span onClick={()=>resetPass(email)}>Reset</span></p>:null}
                     
                     
                 </div>

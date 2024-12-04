@@ -150,3 +150,9 @@
     border-radius: 15px;
     
 }
+@media (max-width:900px){
+    .chat-box{
+        width: 80vw;
+        justify-content: center;
+    }
+}

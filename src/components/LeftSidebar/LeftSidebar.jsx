@@ -20,7 +20,7 @@ import { toast } from "react-toastify";
 
 const LeftSidebar = () => {
   const navigate = useNavigate();
-  const { userData, chatData, setChatData, setChatUser, setMessagesId } = useContext(AppContext);
+  const { userData, chatData, setChatData, setChatUser, setMessagesId , chatVisual,setChatVisual } = useContext(AppContext);
   const [user, setUser] = useState(null);
   const [searchResults, setSearchResults] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -133,10 +133,11 @@ const LeftSidebar = () => {
   const setChat = async (item) => {
     setMessagesId(item.messageId);
     setChatUser(item);
+    setChatVisual(true);
   };
 
   return (
-    <div className="ls">
+    <div className={`ls ${chatVisual?"hidden":""}`}>
       <div className="ls-top">
         <div className="ls-nav">
           <img src={assets.logo} className="logo" alt="" />
@@ -146,7 +147,7 @@ const LeftSidebar = () => {
               <div className="sub-menu">
                 <p onClick={() => navigate("/profile")}>Edit Profile</p>
                 <hr />
-                <p>Friend Requests</p> {/* Add logout functionality here */}
+                <p onClick={()=>navigate("/FriendRequests")} >Friend Requests</p> {/* Add logout functionality here */}
               </div>
             )} 
           </div>

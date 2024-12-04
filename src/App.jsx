@@ -9,6 +9,7 @@ import { useContext, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './config/firebase';
 import { AppContext } from './context/AppContext';
+import Fr from './pages/FriendRequests/Fr';
 const App = () => {
   const navigate = useNavigate();
   const {loadUserData} = useContext(AppContext);
@@ -31,6 +32,7 @@ const App = () => {
         <Route path="/" element={<Login/>} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/profile" element={<ProfileUpdate />} />
+        <Route path="/FriendRequests" element={<Fr />} />
       </Routes>
     
     </>

@@ -1,4 +1,4 @@
-.login{
+.login {
     min-height: 100vh;
     background: url(/background.png) no-repeat center center/cover;
     background-size: cover;
@@ -6,10 +6,12 @@
     align-items: center;
     justify-content: space-evenly;
 }
-.login.logo{
-    width:max(20vw, 200px);
+
+.login .logo { /* Assuming you meant .login .logo instead of .login.logo */
+    width: max(20vw, 200px);
 }
-.login-form{
+
+.login-form {
     background-color: aliceblue;
     padding: 20px 30px;
     display: flex;
@@ -60,4 +62,36 @@
     color: rgb(0, 157, 255);
     cursor: pointer;
     font-weight: 500;
+}
+@media (max-width: 768px) {
+    .login {
+        flex-direction: column;
+        justify-content: center;
+        gap: 30px;
+    }
+
+    .login .logo {
+        width: 80vw; /* Adjust logo size on smaller screens */
+    }
+
+    .login-form {
+        width: 90vw; 
+        padding: 15px 20px; 
+        box-sizing: border-box; /* Add this */
+    }
+
+    .form-input {
+        padding: 10px; /* Adjust input padding */
+    }
+
+    .login-form button {
+        padding: 10px; /* Adjust button padding */
+    }
+}
+
+@media (max-width: 480px) { 
+    .login-form {
+        width: 90vw; /* Make the form take up full width */
+        border-radius: 0; /* Remove border-radius */
+    }
 }
