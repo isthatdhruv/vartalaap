@@ -1,21 +1,68 @@
-.fr{
-    min-height: 100vh;
-    min-width: 100vw;
-    background: url(/background.png) no-repeat;
-    background-size: cover;
+.fr {
+  min-height: 100vh;
+  min-width: 100vw;
+  background: url(/background.png) no-repeat;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fr-box {
+  background-color: aliceblue;
+  /* mi-width: 60vw; */
+  max-width: 30vw;
+  min-width: 30vw;
+  max-height: 90vh;
+  min-height: 90vh;
+  border-radius: 15px;
+}
+.fr-box h1 {
+  text-align: center;
+  padding: 10px;
+  font-size: 2rem;
+  color: #333;
+}
+.fr-item{
+    padding: 10px;
     display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #ccc;
+
+
+}
+.friend-btn{
+    display: flex;
+    gap: 80px;
+    width: 100%;
+    padding: 10px;
     align-items: center;
     justify-content: center;
 }
-.fr-box{
-    background-color: aliceblue;
-    min-width: 50vw;
-    min-height: 70vh;
+.friend-btn .fr-btn1{
+    padding: 12px;
+    border: 1px solid black;
     border-radius: 15px;
+    cursor: pointer;
+    background-color: green;
+    color: white;
+    font-weight: bold;
 }
-.fr-box h1{
-    text-align: center;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    color:darkblue ;
+.friend-btn .fr-btn2{
+    padding: 12px;
+    border: 1px solid black;
+    border-radius: 15px;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    background-color: maroon;
 }
+.fr-list{
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    overflow: scroll;
+    height: 80vh;
+}
+
