@@ -51,20 +51,14 @@ const LeftSidebar = () => {
       setSearchResults(true);
       if (input) {
         const userRef = collection(db, "users");
-        const q = query(userRef, where("username", "==", input.toLowerCase()));
+        const q = query(userRef, where("username", "==", input.toLowerCase())); // Make sure usernames are stored in lowercase
         const querySnap = await getDocs(q);
 
-        if (!querySnap.empty && querySnap.docs[0].data().id !== userData.id) {
-          const userExists = chatData.some(
-            (user) => user.rId === querySnap.docs[0].data().id
-          );
+        console.log(querySnap.docs); // Log the query results
 
-          if (userExists) {
-            setUser(querySnap.docs[0].data());
-          } else {
-            // toast.info("This user is already in your friends list!");
-            // setUser(null);
-          }
+        if (!querySnap.empty) { // Removed the userData.id check
+          // Removed the userExists condition
+          setUser(querySnap.docs[0].data()); 
         } else if (querySnap.empty) {
           console.log("No user found");
           setUser(null);
