@@ -82,8 +82,8 @@
     color: white;
     border: none;
     font-size: 12px;
-    font-weight: 300;
-    padding: 10px 65px;
-    border-radius: 20px;
+    font-weight: 500px;
+    padding: 10px 30px;
+    border-radius: 30px;
     cursor: pointer;
 }

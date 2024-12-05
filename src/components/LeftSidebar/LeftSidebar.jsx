@@ -13,14 +13,22 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { db } from "../../config/firebase";
+import { db, logout } from "../../config/firebase";
 1;
 import { AppContext } from "../../context/AppContext";
 import { toast } from "react-toastify";
 
 const LeftSidebar = () => {
   const navigate = useNavigate();
-  const { userData, chatData, setChatData, setChatUser, setMessagesId , chatVisual,setChatVisual } = useContext(AppContext);
+  const {
+    userData,
+    chatData,
+    setChatData,
+    setChatUser,
+    setMessagesId,
+    chatVisual,
+    setChatVisual,
+  } = useContext(AppContext);
   const [user, setUser] = useState(null);
   const [searchResults, setSearchResults] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -43,7 +51,7 @@ const LeftSidebar = () => {
     if (uniqueUsers.length !== chatData.length) {
       setChatData(uniqueUsers);
     }
-  }, [chatData,setChatData]);
+  }, [chatData, setChatData]);
 
   const inputHandler = async (e) => {
     try {
@@ -56,9 +64,10 @@ const LeftSidebar = () => {
 
         console.log(querySnap.docs); // Log the query results
 
-        if (!querySnap.empty) { // Removed the userData.id check
+        if (!querySnap.empty) {
+          // Removed the userData.id check
           // Removed the userExists condition
-          setUser(querySnap.docs[0].data()); 
+          setUser(querySnap.docs[0].data());
         } else if (querySnap.empty) {
           console.log("No user found");
           setUser(null);
@@ -73,57 +82,28 @@ const LeftSidebar = () => {
   };
 
   const addChat = async () => {
-    const messagesRef = collection(db, "messages");
-    const chatRef = collection(db, "chats");
-  
     try {
-      // 1. Check if the user already exists in the friends list
-      const userExists = chatData.some((chat) => chat.rId === user.id);
-  
-      if (userExists) {
-        toast.info("This user is already in your friends list!");
-        return;
-      }
-  
-      // 2. If the user doesn't exist, proceed with creating the chat
-      const chatQuery = query(
-        chatRef,
-        where("chatData", "array-contains-any", [
-          { rId: userData.id, messageId: user.id },
-          { rId: user.id, messageId: userData.id },
-        ])
-      );
-  
-      const chatSnapshot = await getDocs(chatQuery);
-      if (!chatSnapshot.empty) {
-        console.log("Chat already exists!");
-        toast.error("Chat already exists!");
-        return;
+      // 1. Send a friend request to the receiver
+      const receiverId = user.id; // Assuming 'user' holds the receiver's data
+      const senderId = userData.id;
+
+      // Get the receiver's friend request document
+      const receiverFriendRequestsRef = doc(db, "friendRequests", receiverId);
+      const receiverFriendRequestsDoc = await getDoc(receiverFriendRequestsRef);
+
+      if (!receiverFriendRequestsDoc.exists()) {
+        // Create the document if it doesn't exist
+        await setDoc(receiverFriendRequestsRef, {
+          requests: [senderId],
+        });
       } else {
-        const newMessageRef = doc(messagesRef);
-        await setDoc(newMessageRef, {
-          createAt: serverTimestamp(),
-          messages: [],
-        });
-        await updateDoc(doc(chatRef, user.id), {
-          chatData: arrayUnion({
-            messageId: newMessageRef.id,
-            lastMessage: "",
-            rId: userData.id,
-            updatedAt: Date.now(),
-            messageSeen: true,
-          }),
-        });
-        await updateDoc(doc(chatRef, userData.id), {
-          chatData: arrayUnion({
-            messageId: newMessageRef.id,
-            lastMessage: "",
-            rId: user.id,
-            updatedAt: Date.now(),
-            messageSeen: true,
-          }),
+        // Update the existing document with the new request
+        await updateDoc(receiverFriendRequestsRef, {
+          requests: arrayUnion(senderId),
         });
       }
+
+      toast.success("Friend request sent!");
     } catch (error) {
       toast.error(error.message);
       console.error(error);
@@ -137,19 +117,25 @@ const LeftSidebar = () => {
   };
 
   return (
-    <div className={`ls ${chatVisual?"hidden":""}`}>
+    <div className={`ls ${chatVisual ? "hidden" : ""}`}>
       <div className="ls-top">
         <div className="ls-nav">
           <img src={assets.logo} className="logo" alt="" />
           <div className="menu">
             <img onClick={toggleMenu} src={assets.menu_icon} alt="" />
-            {showMenu && ( // Correct conditional rendering 
+            {showMenu && ( // Correct conditional rendering
               <div className="sub-menu">
                 <p onClick={() => navigate("/profile")}>Edit Profile</p>
                 <hr />
-                <p onClick={()=>navigate("/FriendRequests")} >Friend Requests</p> {/* Add logout functionality here */}
+                <p onClick={() => navigate("/FriendRequests")}>
+                  Friend Requests
+                </p>{" "}
+                {/* Add logout functionality here */}
+                <hr />
+                <p onClick={() => logout()}>Logout</p>{" "}
+                {/* Add logout functionality here */}
               </div>
-            )} 
+            )}
           </div>
         </div>
         <div className="ls-search">
