@@ -5,6 +5,9 @@ import { logout } from "../../config/firebase";
 import { AppContext } from "../../context/AppContext";
 
 const RightSidebar = () => {
+    const [currState,setCurrState]=React.useState('friend');
+     
+
     const {chatUser,messages}=useContext(AppContext);
     const [msgImages,setMsgImages]=React.useState([]);
 
@@ -42,12 +45,14 @@ const RightSidebar = () => {
                     <img src={assets.pic2} alt="" /> */}
                 </div>
             </div>
-            <button onClick={()=>logout()} className="">Logout</button>
+            {currState === 'friend' ? (<button onClick={()=>setCurrState('unfriend')} className="">Remove Friend</button>):(<button onClick={()=>setCurrState('friend')} className="">Add Friend</button>)}
         </div>
     ):(
         <div className="rs">
-            <button onClick={()=>logout()} className="">Logout</button> 
+            {currState === 'friend' ? (<button onClick={()=>setCurrState('unfriend')} className="">Remove Friend</button>):(<button onClick={()=>setCurrState('friend')} className="">Add Friend</button>)}
+            
         </div>
     )
-}
+};
+
 export default RightSidebar;
