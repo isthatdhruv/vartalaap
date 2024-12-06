@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import './RightSidebar.css';
 import assets from "../../assets/assets";
-import { logout } from "../../config/firebase";
+// import { logout } from "../../config/firebase";
 import { AppContext } from "../../context/AppContext";
 
 const RightSidebar = () => {
@@ -49,7 +49,7 @@ const RightSidebar = () => {
         </div>
     ):(
         <div className="rs">
-            {currState === 'friend' ? (<button onClick={()=>setCurrState('unfriend')} className="">Remove Friend</button>):(<button onClick={()=>setCurrState('friend')} className="">Add Friend</button>)}
+            {/* {currState === 'friend' ? (<button onClick={()=>setCurrState('unfriend')} className="">Remove Friend</button>):(<button onClick={()=>setCurrState('friend')} className="">Add Friend</button>)} */}
             
         </div>
     )
