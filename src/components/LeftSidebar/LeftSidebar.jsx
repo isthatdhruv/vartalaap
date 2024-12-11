@@ -60,7 +60,7 @@ const LeftSidebar = () => {
       setSearchResults(true);
       if (input) {
         const userRef = collection(db, "users");
-        const q = query(userRef, where("username", "==", input.toLowerCase())); // Make sure usernames are stored in lowercase
+        const q = query(userRef, where("username".toLowerCase(), "==", input.toLowerCase())); // Make sure usernames are stored in lowercase
         const querySnap = await getDocs(q);
 
         console.log(querySnap.docs); // Log the query results
@@ -85,7 +85,7 @@ const LeftSidebar = () => {
   const addChat = async () => {
     try {
       // 1. Send a friend request to the receiver
-      const receiverId = user.id; // Assuming 'user' holds the receiver's data
+      const receiverId = user.id; 
       const senderId = userData.id;
 
       // Get the receiver's friend request document

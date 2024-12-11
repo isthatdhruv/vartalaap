@@ -60,7 +60,7 @@ const Login = () => {
 
 
                     }
-                    {currentState === "Login" ? <p className="login-toggle">Forgot Password ? <span onClick={()=>resetPass(email)}>Reset</span></p>:null}
+                    {currentState === "Login" ? <p className="login-toggle">Forgot Password ? <span onClick={()=>resetPass(email)}>Reset Pass</span></p>:null}
                     
                     
                 </div>
